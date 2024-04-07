@@ -20,24 +20,28 @@
         function addDataToKey() {
             var key = generateRandomKey();
             var data = "This is some data"; // Replace this with your desired data
-            var keyData = {};
+            var keyData = localStorage.getItem("generatedKeys");
+            keyData = keyData ? JSON.parse(keyData) : {};
             keyData[key] = { data: data, timestamp: Date.now() };
             localStorage.setItem("generatedKeys", JSON.stringify(keyData));
             document.getElementById("keyDisplay").innerText = key + " is " + data;
             console.log("Key and data added:", key, data);
+
+            // Embed the generator once key generation is done
+            embedGenerator();
         }
 
         // Function to check and remove expired keys
         function checkAndRemoveExpiredKeys() {
-            var storedKeys = localStorage.getItem("generatedKeys");
-            if (storedKeys) {
-                var keys = JSON.parse(storedKeys);
-                for (var key in keys) {
-                    if (Date.now() - keys[key].timestamp > 24 * 60 * 60 * 1000) {
-                        delete keys[key];
+            var keyData = localStorage.getItem("generatedKeys");
+            if (keyData) {
+                keyData = JSON.parse(keyData);
+                for (var key in keyData) {
+                    if (Date.now() - keyData[key].timestamp > 24 * 60 * 60 * 1000) {
+                        delete keyData[key];
                     }
                 }
-                localStorage.setItem("generatedKeys", JSON.stringify(keys));
+                localStorage.setItem("generatedKeys", JSON.stringify(keyData));
             }
         }
 
@@ -45,7 +49,19 @@
         setInterval(addDataToKey, 2000);
 
         // Check and remove expired keys when the page loads
-        window.onload = checkAndRemoveExpiredKeys;
+        window.onload = function() {
+            addDataToKey(); // Start generating keys when the page loads
+            checkAndRemoveExpiredKeys(); // Check and remove expired keys
+        };
+
+        // Function to embed the generator
+        function embedGenerator() {
+            var iframe = document.createElement('iframe');
+            iframe.src = 'generator.html'; // Replace 'generator.html' with your generator page
+            iframe.width = '600';
+            iframe.height = '400';
+            document.body.appendChild(iframe);
+        }
     </script>
 </head>
 <body>
