@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Generation</title>
+    <script>
+        // Function to generate a random key
+        function generateRandomKey() {
+            var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var keyLength = 8; // Adjust the key length as needed
+            var key = 'amonguskey_';
+            for (var i = 0; i < keyLength; i++) {
+                key += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return key;
+        }
+
+        // Function to add data to the key and store it in localStorage
+        function addDataToKey() {
+            var key = generateRandomKey();
+            var data = "This is some data"; // Replace this with your desired data
+            var keyData = {};
+            keyData[key] = { data: data, timestamp: Date.now() };
+            localStorage.setItem("generatedKeys", JSON.stringify(keyData));
+            document.getElementById("keyDisplay").innerText = key + " is " + data;
+            console.log("Key and data added:", key, data);
+        }
+
+        // Function to check and remove expired keys
+        function checkAndRemoveExpiredKeys() {
+            var storedKeys = localStorage.getItem("generatedKeys");
+            if (storedKeys) {
+                var keys = JSON.parse(storedKeys);
+                for (var key in keys) {
+                    if (Date.now() - keys[key].timestamp > 24 * 60 * 60 * 1000) {
+                        delete keys[key];
+                    }
+                }
+                localStorage.setItem("generatedKeys", JSON.stringify(keys));
+            }
+        }
+
+        // Function to generate new key and data every 2 seconds
+        setInterval(addDataToKey, 2000);
+
+        // Check and remove expired keys when the page loads
+        window.onload = checkAndRemoveExpiredKeys;
+    </script>
+</head>
+<body>
+    <h1>Key Generation</h1>
+    <p>New Key with Data (Every 2 Seconds):</p>
+    <p id="keyDisplay"></p>
+</body>
+</html>
