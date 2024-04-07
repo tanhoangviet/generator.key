@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Key Validation</title>
+    <script>
+        // Function to check if the entered token is valid
+        function checkTokenValidity() {
+            var enteredToken = document.getElementById("tokenInput").value.trim();
+            if (enteredToken === "admin") {
+                window.location.href = "2.html"; // Redirect to the next page if token is valid
+            } else {
+                alert("Invalid token. Access denied!");
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Key Validation</h1>
+    <label for="tokenInput">Enter Token:</label>
+    <input type="text" id="tokenInput">
+    <button onclick="checkTokenValidity()">Check Token Validity</button>
+</body>
+</html>
